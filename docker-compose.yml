@@ -1,0 +1,14 @@
+services:
+  ctf:
+    build: .
+    image: ctf-ingress:latest
+    container_name: ctf-ingress
+    privileged: true            # DinD 필수 (inotify sysctl 상향도 이 권한으로 entrypoint 가 수행)
+    ports:
+      - "443:443"               # curl -k https://localhost:443/user
+      - "80:80"                 # (편의) curl http://localhost:80/user
+      - "1337:8080"             # nc localhost 1337  (bastion 쉘)
+    volumes:
+      - ctf-docker:/var/lib/docker
+volumes:
+  ctf-docker:

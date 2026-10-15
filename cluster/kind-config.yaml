@@ -1,0 +1,24 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: ctf
+nodes:
+# control-plane: ingress-nginx 가 여기에 고정(ingress-ready=true)
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  # 래퍼 컨테이너의 80/443 -> control-plane 노드의 ingress 80/443
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+# worker1=app, worker2=db, worker3=bastion(파드 없음). 라벨은 기동 후 부여.
+- role: worker
+- role: worker
+- role: worker

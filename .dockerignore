@@ -1,0 +1,5 @@
+**/*.bak*
+**/kubeconfig
+.git
+README.md
+SOLUTION.md

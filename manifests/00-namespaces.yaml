@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app
+  labels:
+    ctf.ns: app
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: db
+  labels:
+    ctf.ns: db
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bastion
+  labels:
+    ctf.ns: bastion
