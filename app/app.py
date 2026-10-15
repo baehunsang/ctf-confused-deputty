@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-"""app 서버 — ns app. 외부에는 /user 만 노출된다(Ingress).
-/user 요청을 받으면 db 의 /user 를 호출해 그 결과를 되돌려준다.
-[개발 잔재] db 가 준 X-Pod-IP 디버그 헤더를 그대로 X-Debug-Upstream 으로 재노출한다."""
 import os
 import json
 import urllib.request
@@ -33,12 +30,11 @@ class Handler(BaseHTTPRequestHandler):
             with urllib.request.urlopen(req, timeout=5) as r:
                 body = r.read()
                 db_ip = r.headers.get("X-Pod-IP", "")
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             self._json(502, {"error": "db unreachable", "detail": str(e)})
             return
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
-        # [개발 잔재] 백엔드(db) Pod IP:port 를 응답 헤더로 그대로 전달 — 운영 전 제거했어야 함
         if db_ip:
             self.send_header("X-Debug-Upstream", "%s:%s" % (db_ip, DB_PORT))
         self.send_header("Content-Length", str(len(body)))
